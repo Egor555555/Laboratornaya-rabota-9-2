@@ -1,0 +1,101 @@
+#Реализуйте два класса: Родитель и Ребёнок. У родителя есть
+#- Имя
+#- Возраст
+#- Список детей
+
+#И он может:
+#- Сообщить информацию о себе
+#- Успокоить ребёнка
+#- Покормить ребёнка
+
+#У ребёнка есть:
+#- Имя
+#- Возраст 
+#- Состояние спокойствия (например, в виде флага)
+#- Состояние голода (например, в виде флага)
+
+#Написать программу, которая запрашивает сведения об N родителях и их детях (количество детей у каждого родителя – произвольное), а затем выводит меню:
+#1)	Сообщить информацию о родителе с номером k,
+#2)	Сообщить информацию о всех детях для заданного родителя k,
+#3)	Выполнить действие с ребенком (указав номер родителя и номер ребенка). 
+#4)	Выход
+#Обработку ошибочного ввода выполнять не нужно 
+
+class Parent:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+        self.children = []
+    
+    def introduce(self):
+        print(f"Меня зовут {self.name} и мне {self.age} лет.")
+    
+    def calm_child(self, child_num):
+        self.children[child_num].calm()
+    
+    def feed_child(self, child_num):
+        self.children[child_num].feed()
+        
+class Child:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+        self.calmness = True
+        self.hunger = True
+    
+    def calm(self):
+        self.calmness = True
+        print(f"{self.name} спокоен.")
+    
+    def feed(self):
+        self.hunger = False
+        print(f"{self.name} сыт.")
+        
+parents = []
+children = []
+num_parents = int(input("Введите количество родителей: "))
+for i in range(num_parents):
+    name = input(f"Введите имя родителя под номером {i+1}: ")
+    age = int(input(f"Введите возраст родителя под номером {i+1}: "))
+    num_children = int(input(f"Сколько детей у {name}? "))
+    parent = Parent(name, age)
+    for j in range(num_children):
+        child_name = input(f"Введите имя ребёнка под номером {j+1}: ")
+        child_age = int(input(f"Введите возраст ребёнка под номером {j+1}: "))
+        child = Child(child_name, child_age)
+        parent.children.append(child)
+        children.append(child)
+    parents.append(parent)
+while True:
+    print("1. Получить информацию о родителе")
+    print("2. Получить информацию о ребёнке родителя")
+    print("3. Выполнить действие с ребёнком")
+    print("4. Выход")
+    
+    choice = int(input("Выберите действие: "))
+    
+    if choice == 1:
+        parent_num = int(input("Введите номер родителя (начинается с 1): "))
+        parent = parents[parent_num-1]
+        parent.introduce()
+    elif choice == 2:
+        parent_num = int(input("Введите номер родителя (начинается с 1): "))
+        parent = parents[parent_num-1]
+        print(f"Ребёнок родителя под именем {parent.name}:")
+        for i, child in enumerate(parent.children):
+            print(f"{i+1}. {child.name}, {child.age} лет")
+    elif choice == 3:
+        parent_num = int(input("Введите номер родителя (начинается с 1): "))
+        child_num = int(input("Введите номер ребёнка (начинается с 1): "))
+        parent = parents[parent_num-1]
+        child = parent.children[child_num-1]
+        print(f"Какое действие вы бы хотели сделать с ребёнком {child.name}?")
+        print("1. Успокоить")
+        print("2. Покормить")
+        action = int(input("Выберите номер действия: "))
+        if action == 1:
+            parent.calm_child(child_num-1)
+        elif action == 2:
+            parent.feed_child(child_num-1)
+    elif choice == 4:
+        break
