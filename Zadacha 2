@@ -1,0 +1,108 @@
+#Напишите программу, которая реализует игру Крестики-нолики между двумя игроками. 
+#Ваши классы в этой задаче могут выглядеть так: 
+````
+#class Cell:
+    #  Клетка, у которой есть значения
+    #   - занята она или нет
+    #   - номер клетки
+
+#class Board:
+    #  Класс поля, который создаёт у себя экземпляры клетки
+
+#class Player:
+    #  У игрока может быть
+    #   - имя
+    #   - на какую клетку ходит
+
+class Cell:
+    def __init__(self, value="-", number=0):
+        self.value = value
+        self.number = number
+    def set_value(self, value):
+        self.value = value
+    def get_number(self):
+        return self.number
+    def __str__(self):
+        return self.value
+
+class Board:
+    def __init__(self):
+        self.cells = [Cell() for i in range(9)]
+    def display(self):
+        print("-------------")
+        for i in range(3):
+            print("|", self.cells[i * 3], "|", self.cells[i * 3 + 1], "|", self.cells[i * 3 + 2], "|")
+            print("-------------")
+    def update(self, cell_number, value):
+        self.cells[cell_number].set_value(value)
+    def is_full(self):
+        for cell in self.cells:
+            if cell.value == "-":
+                return False
+        return True
+    def is_winner(self, player):
+        if self.cells[0].value == player.symbol and self.cells[1].value == player.symbol and self.cells[2].value == player.symbol:
+            return True
+        elif self.cells[3].value == player.symbol and self.cells[4].value == player.symbol and self.cells[5].value == player.symbol:
+            return True
+        elif self.cells[6].value == player.symbol and self.cells[7].value == player.symbol and self.cells[8].value == player.symbol:
+            return True
+        elif self.cells[0].value == player.symbol and self.cells[3].value == player.symbol and self.cells[6].value == player.symbol:
+            return True
+        elif self.cells[1].value == player.symbol and self.cells[4].value == player.symbol and self.cells[7].value == player.symbol:
+            return True
+        elif self.cells[2].value == player.symbol and self.cells[5].value == player.symbol and self.cells[8].value == player.symbol:
+            return True
+        elif self.cells[0].value == player.symbol and self.cells[4].value == player.symbol and self.cells[8].value == player.symbol:
+            return True
+        elif self.cells[2].value == player.symbol and self.cells[4].value == player.symbol and self.cells[6].value == player.symbol:
+            return True
+        else:
+            return False
+
+class Player:
+    def __init__(self, name, symbol):
+        self.name = name
+        self.symbol = symbol
+    def get_move(self):
+        while True:
+            try:
+                move = int(input(self.name + ", Введите цифру от 1 до 9: "))
+                if move < 1 or move > 9:
+                    print("Неверный ввод. Пожалуйста, введите цифру от 1 до 9: ")
+                    continue
+                else:
+                    return move - 1
+            except ValueError:
+                print("Неверный ввод. Пожалуйста, введите цифру от 1 до 9: ")
+
+def play_game():
+    print("Добро пожаловать в игру Крестики-нолики.")
+    name1 = input("Игрок 1, введите пожалуйста своё имя: ")
+    name2 = input("Игрок 2, введите пожалуйста своё имя: ")
+    player1 = Player(name1, "X")
+    player2 = Player(name2, "O")
+    board = Board()
+    current_player = player1
+    while True:
+        board.display()
+        move = current_player.get_move()
+        if board.cells[move].value != "-":
+            print("Это поле уже занято. Пожалуйста, выберите другое.")
+            continue
+        board.update(move, current_player.symbol)
+        if board.is_winner(current_player):
+            print(current_player.name + " победил!")
+            board.display()
+            break
+        elif board.is_full():
+            print("Ничья!")
+            board.display()
+            break
+        else:
+            if current_player == player1:
+                current_player = player2
+            else:
+                current_player = player1
+
+play_game()
